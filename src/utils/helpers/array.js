@@ -1,0 +1,23 @@
+export function isArraySame(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  for (var i = 0, len = arr1.length; i < len; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
+
+export function assignBooleanValue(array) {
+  if (array.includes(true)) {
+    return true;
+  } else {
+    return false;
+  }
+}

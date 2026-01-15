@@ -3,7 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:allowBackup="false"
         android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup"
         tools:targetApi="28"
-        tools:ignore="GoogleAppIndexingWarning"/>
+        tools:ignore="GoogleAppIndexingWarning">
+
+    </application>
+
 </manifest>
