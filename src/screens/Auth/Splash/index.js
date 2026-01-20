@@ -7,7 +7,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import {BGSplash, Logo} from '../../../assets';
-import {Container} from '../../../components';
+import {Container} from '../../../components/atoms';
 import {getUserToken} from '../../../services/redux/action';
 
 const {height} = Dimensions.get('window');

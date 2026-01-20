@@ -1,116 +1,106 @@
+import {Alert} from 'react-native';
+import API from './axiosConfig';
+import {getUserToken, removeToken} from '../redux/action';
+
 export * from './Auth';
 export * from './Profile';
 export * from './Petani';
-import {Alert} from 'react-native';
-import API from './axiosConfig';
-import {getUserToken, removeToken, removeUserToken} from '../redux/action';
-import {store} from '../redux/store';
 
-async function buildResponse(response, auth) {
-  // if (auth) {
-  //   return response;
-  // }
+/**
+ * Build API response safely (NO Redux here)
+ */
+async function buildResponse(response) {
   if (
     response?.response?.status === 401 ||
     response?.response?.status === 403
   ) {
-    removeToken().then(() => {
-      // console.log('sukses hapus token');
+    await removeToken();
 
-      store.dispatch({type: 'SET_USER', value: {}});
-      store.dispatch({type: 'SET_ISLOGIN', value: false});
-      Alert.alert(
-        'Unauthenticated',
-        'Sesi habis atau ada yang login menggunakan akun Anda',
-      );
-    });
-    console.log('buildResponse response', response);
-    // console.log('logout');
-    return response;
-  } else {
-    return response;
+    Alert.alert(
+      'Unauthenticated',
+      'Sesi habis atau ada yang login menggunakan akun Anda',
+    );
+
+    // ⬇️ RETURN FLAG, BIAR LAYER ATAS YANG HANDLE
+    return {
+      __unauthorized: true,
+      response,
+    };
   }
+
+  return response;
 }
 
 export const getErrorResponse = response => {
   if (Array.isArray(response) && response.length > 0) {
-    // Ambil pesan error dari setiap objek dalam array response
-    const errorMessages = response.map(item => item.message); //item.message, tergantung dari key api
-    // errorMessages.push('Test');
-    // errorMessages.push('Test 2');
-    // errorMessages.push('Test 3');
-    return errorMessages;
-  } else {
-    // Reset pesan error jika tidak ada error
-    return response;
+    return response.map(item => item.message);
   }
+  return response;
 };
 
-export default {
+const ApiService = {
   post: async (url, body, auth = true) => {
-    console.log('==== POST', url, body);
-    let token = await getUserToken();
-    // token = '418d206de84-c3ea-4736-b6f3-caba6115f832';
+    const token = await getUserToken();
+
     return API(url, {
       method: 'POST',
       head: {
         'Content-Type': 'application/json',
-        // "Access-Control-Allow-Origin": "*",
         Authorization: auth ? `Bearer ${token}` : null,
       },
       responseType: 'json',
       body,
     })
-      .then(response => buildResponse(response))
-      .catch(err => buildResponse(err));
+      .then(buildResponse)
+      .catch(buildResponse);
   },
+
   put: async (url, body, auth = true) => {
-    // console.log('==== url', url, body);
-    let token = await getUserToken();
-    // token = '418d206de84-c3ea-4736-b6f3-caba6115f832';
+    const token = await getUserToken();
+
     return API(url, {
       method: 'PUT',
       head: {
         'Content-Type': 'application/json',
-        // "Access-Control-Allow-Origin": "*",
         Authorization: auth ? `Bearer ${token}` : null,
       },
       responseType: 'json',
       body,
     })
-      .then(response => buildResponse(response))
-      .catch(err => buildResponse(err));
+      .then(buildResponse)
+      .catch(buildResponse);
   },
+
   get: async (url = '', params, auth = true) => {
-    let token = await getUserToken();
-    // console.log('tokennnn', token);
-    console.log('==== GET', url, token);
+    const token = await getUserToken();
+
     return API(url, {
       method: 'GET',
       head: {
         'Content-Type': 'application/json',
-        // "Access-Control-Allow-Origin": "*",
         Authorization: auth ? `Bearer ${token}` : null,
       },
       params: {...params},
     })
-      .then(response => buildResponse(response))
-      .catch(err => buildResponse(err));
+      .then(buildResponse)
+      .catch(buildResponse);
   },
+
   delete: async (url, body = null, auth = true) => {
-    let token = await getUserToken();
-    // token = '418d206de84-c3ea-4736-b6f3-caba6115f832';
+    const token = await getUserToken();
+
     return API(url, {
       method: 'DELETE',
       head: {
         'Content-Type': 'application/json',
-        // "Access-Control-Allow-Origin": "*",
         Authorization: auth ? `Bearer ${token}` : null,
       },
       responseType: 'json',
       body,
     })
-      .then(response => buildResponse(response))
-      .catch(err => buildResponse(err));
+      .then(buildResponse)
+      .catch(buildResponse);
   },
 };
+
+export default ApiService;

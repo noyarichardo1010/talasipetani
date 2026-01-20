@@ -36,7 +36,7 @@ const CameraMask = () => {
   );
 };
 
-const CameraDocument = forwardRef(({onCapture, navigation, route}) => {
+const CameraDocument = forwardRef(({onCapture, navigation, route}, ref) => {
   const {setChooseFromWhere, setImage} = route.params;
 
   const cameraRef = useRef();

@@ -47,7 +47,7 @@ const CameraMask = () => {
   );
 };
 
-const ScanBarcode = forwardRef(({onCapture, navigation, route}) => {
+const ScanBarcode = forwardRef(({onCapture, navigation, route}, ref) => {
   const cameraRef = useRef();
 
   const handleDetectedBarcode = data => {

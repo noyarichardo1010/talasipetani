@@ -7,7 +7,7 @@
 // export default store;
 
 import {createStore, applyMiddleware, combineReducers} from 'redux';
-import thunk from 'redux-thunk';
+import {thunk} from 'redux-thunk';
 //& OFFLINE SUPPORT
 import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
